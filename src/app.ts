@@ -1,13 +1,11 @@
-import express,{Request,Response} from "express"
+import express, { Request, Response } from 'express';
 
-const app = express()
+const app = express();
 
 app.use(express.json());
 
-app.get('/', (req:Request, res:Response) => {
-  res.send('University Server is Running!!')
-})
-
-
+app.get('/', (req: Request, res: Response) => {
+  res.send('University Server is Running!!');
+});
 
 export default app;
