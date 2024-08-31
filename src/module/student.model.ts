@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import validator from 'validator';
 import {
   Guardian,
   LocalGuardian,
@@ -29,11 +30,15 @@ const userNameSchema = new Schema<UserName>({
   },
   lastName: {
     type: String,
-    trim: true,
+    // trim: true,
     required: [
       true,
       'Last name is required. Please provide a valid last name.',
     ],
+    validate: {
+      validator: (value: string) => validator.isAlpha(value),
+      message: '{VALUE} is not a valid last name',
+    },
   },
 });
 
@@ -125,12 +130,15 @@ const studentSchema = new Schema<Student>({
       values: ['male', 'female', 'other'],
       // message:
       //   "The gender field can only be one of the following : 'male', 'female' or 'other' .",
-      message: '{VALUE} is not valid',
+      message: '{VALUE} is not valid gender',
     },
     required: true,
   },
   dateOfBirth: { type: String },
-  email: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true ,validate:{
+    validator:(value)=>validator.isEmail(value),
+    message: '{VALUE} is not valid email',
+  }},
   contactNo: { type: String, required: true },
   emergencyContactNo: { type: String, required: true },
   bloogGroup: {
