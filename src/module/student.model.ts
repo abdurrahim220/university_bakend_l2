@@ -9,6 +9,9 @@ import {
   TUserName,
 } from './student/student.interface';
 
+import bcrypt from 'bcrypt';
+import config from '../config';
+
 const userNameSchema = new Schema<TUserName>({
   firstName: {
     type: String,
@@ -120,54 +123,118 @@ const localGuradianSchema = new Schema<TLocalGuardian>({
   },
 });
 
-const studentSchema = new Schema<TStudent, StudentModels>({
-  id: { type: String, required: true, unique: true },
-  name: {
-    type: userNameSchema,
-    required: true,
-  },
-  gender: {
-    type: String,
-    enum: {
-      values: ['male', 'female', 'other'],
-      // message:
-      //   "The gender field can only be one of the following : 'male', 'female' or 'other' .",
-      message: '{VALUE} is not valid gender',
+const studentSchema = new Schema<TStudent, StudentModels>(
+  {
+    id: { type: String, required: true, unique: true },
+    password: {
+      type: String,
+      required: [true, 'Password is required'],
+      maxlength: [20, 'Password can not be more than 20 character'],
     },
-    required: true,
-  },
-  dateOfBirth: { type: String },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    validate: {
-      validator: (value) => validator.isEmail(value),
-      message: '{VALUE} is not valid email',
+    name: {
+      type: userNameSchema,
+      required: true,
+    },
+    gender: {
+      type: String,
+      enum: {
+        values: ['male', 'female', 'other'],
+        // message:
+        //   "The gender field can only be one of the following : 'male', 'female' or 'other' .",
+        message: '{VALUE} is not valid gender',
+      },
+      required: true,
+    },
+    dateOfBirth: { type: String },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      validate: {
+        validator: (value) => validator.isEmail(value),
+        message: '{VALUE} is not valid email',
+      },
+    },
+    contactNo: { type: String, required: true },
+    emergencyContactNo: { type: String, required: true },
+    bloogGroup: {
+      type: String,
+      enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+    },
+    presentAddress: { type: String, required: true },
+    permanentAddres: { type: String, required: true },
+    guardian: {
+      type: guardianSchema,
+      required: true,
+    },
+    localGuardian: {
+      type: localGuradianSchema,
+      required: true,
+    },
+    profileImg: { type: String },
+    isActive: {
+      type: String,
+      enum: ['active', 'blocked'],
+      default: 'active',
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
     },
   },
-  contactNo: { type: String, required: true },
-  emergencyContactNo: { type: String, required: true },
-  bloogGroup: {
-    type: String,
-    enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+  {
+    toJSON: { virtuals: true },
   },
-  presentAddress: { type: String, required: true },
-  permanentAddres: { type: String, required: true },
-  guardian: {
-    type: guardianSchema,
-    required: true,
-  },
-  localGuardian: {
-    type: localGuradianSchema,
-    required: true,
-  },
-  profileImg: { type: String },
-  isActive: {
-    type: String,
-    enum: ['active', 'blocked'],
-    default: 'active',
-  },
+);
+
+// ! virtual
+
+studentSchema.virtual('fullName').get(function () {
+  return `${this.name.firstName}  ${this.name.middleName}  ${this.name.lastName}`;
+});
+
+//! pre save middleware /hook : will work on create() save()
+
+studentSchema.pre('save', async function (next) {
+  // console.log(this, 'pre hook : we will save the data');
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  const user = this; // doc
+  // ? hashing password and save into db
+  user.password = await bcrypt.hash(
+    user.password,
+    Number(config.bcrypt_salt_rounds),
+  );
+  next();
+});
+
+// post save middleware / hook
+studentSchema.post('save', function (doc, next) {
+  doc.password = '';
+
+  // console.log(this, 'post hook : we saved our data');
+  next();
+});
+
+// ? Query Middleware
+
+studentSchema.pre('find', function (next) {
+  // console.log(this);
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+studentSchema.pre('findOne', function (next) {
+  // console.log(this);
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+//
+studentSchema.pre('aggregate', function (next) {
+  // console.log(this);
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+
+  next();
 });
 
 //? creating custom instance
