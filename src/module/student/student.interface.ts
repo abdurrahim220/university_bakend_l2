@@ -1,4 +1,4 @@
-import { Model ,Types} from 'mongoose';
+import { Model, Types } from 'mongoose';
 
 export type TUserName = {
   firstName: string;
@@ -24,10 +24,10 @@ export type TLocalGuardian = {
 
 export type TStudent = {
   id: string;
-  user:Types.ObjectId;
+  user: Types.ObjectId;
   name: TUserName;
   gender: 'male' | 'female' | 'other';
-  dateOfBirth?: string;
+  dateOfBirth?: Date;
   email: string;
   contactNo: string;
   emergencyContactNo: string;
@@ -57,3 +57,5 @@ export interface StudentModels extends Model<TStudent> {
 //   Record<string, never>,
 //   StudentMethods
 // >;
+
+
