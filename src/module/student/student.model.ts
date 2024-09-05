@@ -9,9 +9,6 @@ import {
   TUserName,
 } from '../student/student.interface';
 
-
-
-
 const userNameSchema = new Schema<TUserName>({
   firstName: {
     type: String,
@@ -126,6 +123,10 @@ const localGuradianSchema = new Schema<TLocalGuardian>({
 const studentSchema = new Schema<TStudent, StudentModels>(
   {
     id: { type: String, required: true, unique: true },
+    // password: {
+    //   type: String,
+    //   required: true,
+    // },
     user: {
       type: Schema.Types.ObjectId,
       required: [true, 'User id is required'],
@@ -173,10 +174,15 @@ const studentSchema = new Schema<TStudent, StudentModels>(
       required: true,
     },
     profileImg: { type: String },
-    admissionSemester:{
+    admissionSemester: {
       type: Schema.Types.ObjectId,
       ref: 'AcademicSemester',
     },
+    academicDepartment: {
+      type: Schema.Types.ObjectId,
+      ref: 'AcademicDepartment',
+    },
+
     isDeleted: {
       type: Boolean,
       default: false,
@@ -194,7 +200,6 @@ studentSchema.virtual('fullName').get(function () {
 });
 
 //! pre save middleware /hook : will work on create() save()
-
 
 // ? Query Middleware
 

@@ -1,3 +1,5 @@
+import httpStatus from 'http-status';
+import AppError from '../../errors/AppError';
 import { academicSemesterNameCodeMapper } from './academicConstant';
 import { TAcademicSemester } from './academicSemester.interface';
 import AcademicSemester from './academicSemester.model';
@@ -6,10 +8,11 @@ const createAcademicSemesterIntoDB = async (payload: TAcademicSemester) => {
   // semester name --> semester code
 
   if (academicSemesterNameCodeMapper[payload.name] !== payload.code) {
-    throw new Error(
+    throw new AppError(
       `Academic semester name and code do not match. Name: ${
         payload.name
       }, Code: ${payload.code}`,
+      httpStatus.NOT_FOUND,
     );
   }
 
@@ -36,10 +39,11 @@ const updateSingleAcademicSemesterFromDB = async (
     updateData.code &&
     academicSemesterNameCodeMapper[updateData.name] !== updateData.code
   ) {
-    throw new Error(
+    throw new AppError(
       `Academic semester name and code do not match. Name: ${
         updateData.name
       }, Code: ${updateData.code}`,
+      httpStatus.NOT_FOUND,
     );
   }
   const result = await AcademicSemester.findOneAndUpdate(
