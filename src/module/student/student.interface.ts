@@ -37,6 +37,7 @@ export type TStudent = {
   guardian: TGuardian;
   localGuardian: TLocalGuardian;
   profileImg?: string;
+  admissionSemester:  Types.ObjectId;
   isDeleted: boolean;
 };
 
@@ -57,5 +58,3 @@ export interface StudentModels extends Model<TStudent> {
 //   Record<string, never>,
 //   StudentMethods
 // >;
-
-

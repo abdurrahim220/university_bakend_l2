@@ -8,6 +8,7 @@ const userSchema = new Schema<TUser>(
     id: {
       type: String,
       required: true,
+      unique: true,
     },
     password: {
       type: String,
@@ -36,8 +37,6 @@ const userSchema = new Schema<TUser>(
   },
 );
 
-
-
 userSchema.pre('save', async function (next) {
   // console.log(this, 'pre hook : we will save the data');
   // eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -57,7 +56,6 @@ userSchema.post('save', function (doc, next) {
   // console.log(this, 'post hook : we saved our data');
   next();
 });
-
 
 const User = model<TUser>('User', userSchema);
 

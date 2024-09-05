@@ -24,7 +24,41 @@ const createAcademicSemesterValidationSchema = z.object({
     }),
   }),
 });
+const updateAcademicSemesterValidationSchema = z.object({
+  body: z.object({
+    name: z
+      .enum(['Autumn', 'Summer', 'Fall'], {
+        required_error: 'Semester name is required',
+        invalid_type_error: 'Invalid semester name',
+      })
+      .optional(),
+    code: z
+      .enum(['01', '02', '03'], {
+        required_error: 'Semester code is required',
+        invalid_type_error: 'Invalid semester code',
+      })
+      .optional(),
+    year: z
+      .string({
+        required_error: 'Year is required',
+      })
+      .optional(),
+    startMonth: z
+      .enum(months, {
+        required_error: 'Start month is required',
+        invalid_type_error: 'Invalid month',
+      })
+      .optional(),
+    endMonth: z
+      .enum(months, {
+        required_error: 'End month is required',
+        invalid_type_error: 'Invalid month',
+      })
+      .optional(),
+  }),
+});
 
 export const AcademicSemesterValidation = {
   createAcademicSemesterValidationSchema,
+  updateAcademicSemesterValidationSchema,
 };

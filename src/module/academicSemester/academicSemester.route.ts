@@ -17,11 +17,14 @@ router.get(
   AcademicSemesterControllers.getAllAcademicSemester,
 );
 router.get(
-  '/get-all-academic-semester/:id',
+  '/get-single-academic-semester/:id',
   AcademicSemesterControllers.getSingleAcademicSemester,
 );
 router.patch(
-  '/get-all-academic-semester/:id',
+  '/update-academic-semester/:id',
+  validateRequest(
+    AcademicSemesterValidation.updateAcademicSemesterValidationSchema,
+  ),
   AcademicSemesterControllers.updateAcademicSemester,
 );
 

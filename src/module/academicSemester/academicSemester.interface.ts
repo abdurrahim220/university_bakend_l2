@@ -8,6 +8,7 @@ export type TAcademicSemester = {
 };
 
 
+
 export const months = [
   'January',
   'February',
@@ -24,3 +25,9 @@ export const months = [
 ] as const; // Make `months` a tuple of string literals
 
 export type TMonth = (typeof months)[number];
+
+
+
+export type TAcademicSemesterCodeMapper = {
+  [key: string]: string;
+};
