@@ -7,9 +7,6 @@ import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
 // import studentJoiValidationSchema from './student.joi.validation';
 
-
-
-
 const getAllStudents = catchAsync(async (req, res, next) => {
   const result = await StudentServices.getAllStudentsFromDB();
 
@@ -43,8 +40,22 @@ const deleteStudent = catchAsync(async (req, res, next) => {
   });
 });
 
+const updateStudent = catchAsync(async (req, res, next) => {
+  const { studentId } = req.params;
+  const { student } = req.body;
+  const result = await StudentServices.updateStudentIntoDB(studentId, student);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Student updated successfully',
+    data: result,
+  });
+});
+
 export const StudentController = {
   getAllStudents,
   getSingleStudent,
   deleteStudent,
+  updateStudent,
 };
