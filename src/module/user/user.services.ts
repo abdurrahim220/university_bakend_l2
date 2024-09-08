@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose from 'mongoose';
 import config from '../../config';
 
@@ -57,11 +58,10 @@ const createStudentIntoDB = async (password: string, studentData: TStudent) => {
     await session.commitTransaction();
     await session.endSession();
     return newStudent;
-
-  } catch (error) {
+  } catch (error : any) {
     await session.abortTransaction();
     await session.endSession();
-    
+    throw new Error(error);
   }
 };
 
