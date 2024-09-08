@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import express, { Request, Response, NextFunction } from 'express';
 
@@ -14,6 +13,10 @@ app.use(express.json());
 
 // application routes
 app.use('/api/v1', router);
+
+const test = async (req: Request, res: Response) => {
+  // Promise.reject();
+};
 
 app.get('/', (req: Request, res: Response) => {
   res.send('University Server is running!!');

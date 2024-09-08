@@ -9,10 +9,11 @@ import handleZodError from '../errors/handleZodErrors';
 import handleValidationError from '../errors/handleValidationErrors';
 import handleCastError from '../errors/handleCastError';
 import handleDuplicateError from '../errors/handleDublicateError';
+import AppError from '../errors/AppError';
 
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
-  let statusCode = err.statusCode || 500;
-  let message = err.message || 'Internal Server Error';
+  let statusCode = 500;
+  let message = 'Internal Server Error';
 
   let errorSources: TErrorSource[] = [
     {
@@ -36,12 +37,28 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     statusCode = simplifiedError?.statusCode;
     message = simplifiedError?.message;
     errorSources = simplifiedError?.errorSources;
-  }
-   else if (err?.code === 1100) {
+  } else if (err?.code === 1100) {
     const simplifiedError = handleDuplicateError(err);
     statusCode = simplifiedError?.statusCode;
     message = simplifiedError?.message;
     errorSources = simplifiedError?.errorSources;
+  } else if (err instanceof AppError) {
+    statusCode = err?.statusCode;
+    message = err?.message;
+    errorSources = [
+      {
+        path: '',
+        message: err?.message,
+      },
+    ];
+  } else if (err instanceof Error) {
+    message = err?.message;
+    errorSources = [
+      {
+        path: '',
+        message: err?.message,
+      },
+    ];
   }
 
   return res.status(statusCode).json({
