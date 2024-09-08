@@ -1,3 +1,10 @@
+ # Getting started Project
+
+ ## first create student data
+
+```
+student data 1
+```
     {
     "student": {
         "id": "S123456",
@@ -33,3 +40,46 @@
         "academicDepartment": "66dcfd07da661d698d0b2109"
         }  
     }
+
+
+
+```
+student data 2
+```
+    {
+    "student": {
+        "id": "S345678",
+        "name": {
+            "firstName": "Michael",
+            "middleName": "James",
+            "lastName": "Smith"
+        },
+        "gender": "male",
+        "dateOfBirth": "2002-03-12",
+        "email": "michael.smith@example.com",
+        "contactNo": "+1324657980",
+        "emergencyContactNo": "+1654237890",
+        "bloogGroup": "B-",
+        "presentAddress": "100 Broadway, City, Country",
+        "permanentAddres": "350 Elm Street, City, Country",
+        "guardian": {
+            "fatherName": "David Smith",
+            "fatherOccupation": "Architect",
+            "fatherContactNo": "+11876543210",
+            "motherName": "Mary Smith",
+            "motherOccupation": "Interior Designer",
+            "motherContactNo": "+11567843219"
+        },
+        "localGuardian": {
+            "name": "Anna Williams",
+            "occupation": "Teacher",
+            "contactNo": "+16254321234",
+            "address": "432 Cedar Street, City, Country"
+        },
+        "profileImg": "https://example.com/michael-smith.jpg",
+        "admissionSemester": "66d8544a8e2915de042166fe",
+        "academicDepartment": "66dd01f322e681388ccdf42c"
+        }
+    }
+
+
