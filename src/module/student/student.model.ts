@@ -196,14 +196,14 @@ const studentSchema = new Schema<TStudent, StudentModels>(
 // ! virtual
 
 studentSchema.virtual('fullName').get(function () {
-  return `${this.name.firstName}  ${this.name.middleName}  ${this.name.lastName}`;
+  return `${this?.name?.firstName}  ${this?.name?.middleName}  ${this?.name?.lastName}`;
 });
 
 //! pre save middleware /hook : will work on create() save()
 
 // ? Query Middleware
 
-studentSchema.pre('find', function (next) {
+studentSchema?.pre('find', function (next) {
   // console.log(this);
   this.find({ isDeleted: { $ne: true } });
   next();
