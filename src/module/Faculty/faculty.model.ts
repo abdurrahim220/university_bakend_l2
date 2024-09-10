@@ -117,4 +117,19 @@ facultySchema.virtual('fullName').get(function () {
   );
 });
 
+facultySchema.pre('find', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+facultySchema.pre('findOne', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+facultySchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+  next();
+});
+
 export const Faculty = model<TFaculty, FacultyModel>('Faculty', facultySchema);
