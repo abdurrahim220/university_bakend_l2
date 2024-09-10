@@ -9,6 +9,7 @@ import catchAsync from '../../utils/catchAsync';
 const createStudent = catchAsync(async (req, res, next) => {
   const { password, student: studentData } = req.body;
 
+  // console.log(studentData)
   const result = await UserService.createStudentIntoDB(password, studentData);
 
   sendResponse(res, {
@@ -18,7 +19,21 @@ const createStudent = catchAsync(async (req, res, next) => {
     data: result,
   });
 });
+const createFaculty = catchAsync(async (req, res, next) => {
+  const { password, faculty: facultyData } = req.body;
+  // console.log(facultyData)
+
+  const result = await UserService.createFaculty(password, facultyData);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Faculty created successfully',
+    data: result,
+  });
+});
 
 export const UserController = {
   createStudent,
+  createFaculty,
 };
