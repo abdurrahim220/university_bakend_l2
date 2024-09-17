@@ -4,7 +4,9 @@ import sendResponse from '../../utils/sendResponse';
 import { offeredCourseServices } from './offeredCourse.services';
 
 const createOfferedCourse = catchAsync(async (req, res) => {
-  const result = await offeredCourseServices.createOfferedCourseIntoDB(req.body);
+  const result = await offeredCourseServices.createOfferedCourseIntoDB(
+    req.body,
+  );
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -13,9 +15,10 @@ const createOfferedCourse = catchAsync(async (req, res) => {
   });
 });
 
-
 const getAllOfferedCourse = catchAsync(async (req, res) => {
-//   const result
+  const result = await offeredCourseServices.getAllOfferedCoursesFromDB(
+    req.query,
+  );
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -24,7 +27,8 @@ const getAllOfferedCourse = catchAsync(async (req, res) => {
   });
 });
 const getSingleOfferedCourse = catchAsync(async (req, res) => {
-//   const result
+  const { id } = req.params;
+  const result = await offeredCourseServices.getSingleOfferedCourseFromDB(id);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -33,12 +37,25 @@ const getSingleOfferedCourse = catchAsync(async (req, res) => {
   });
 });
 const updateOfferedCourse = catchAsync(async (req, res) => {
-const {id} = req.params;
-    const result = await offeredCourseServices.updateOfferedCourse(id,req.body)
+  const { id } = req.params;
+  const result = await offeredCourseServices.updateOfferedCourseIntoDB(
+    id,
+    req.body,
+  );
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Offered course updated successfully',
+    data: result,
+  });
+});
+const deleteOfferedCourse = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await offeredCourseServices.deleteOfferedCourseFromDB(id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Offered course deleted successfully',
     data: result,
   });
 });
@@ -48,4 +65,5 @@ export const OfferedCourseController = {
   getAllOfferedCourse,
   getSingleOfferedCourse,
   updateOfferedCourse,
+  deleteOfferedCourse,
 };
