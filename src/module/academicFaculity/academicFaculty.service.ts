@@ -1,18 +1,18 @@
 import { TAcademic } from './academicFaculty.interface';
-import { academicFaculty } from './academicFaculty.model';
+import { AcademicFaculty } from './academicFaculty.model';
 
 const createAcademicFacultyIntoDB = async (payload: TAcademic) => {
-  const result = await academicFaculty.create(payload);
+  const result = await AcademicFaculty.create(payload);
   return result;
 };
 
 const getAlAcademicFacultyFromDB = async () => {
-  const result = await academicFaculty.find();
+  const result = await AcademicFaculty.find();
   return result;
 };
 
 const getSingleAcademicFacultyFromDB = async (id: string) => {
-  const result = await academicFaculty.findById(id);
+  const result = await AcademicFaculty.findById(id);
   return result;
 };
 
@@ -20,7 +20,7 @@ const updateAcademicFacultyIntoDB = async (
   id: string,
   payload: Partial<TAcademic>,
 ) => {
-  const result = await academicFaculty.findByIdAndUpdate({ _id: id }, payload, {
+  const result = await AcademicFaculty.findByIdAndUpdate({ _id: id }, payload, {
     new: true,
   });
   return result;

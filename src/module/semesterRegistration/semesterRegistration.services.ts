@@ -81,8 +81,50 @@ const geSingleSemesterRegistrationFromDB = async (id: string) => {
   return result;
 };
 
-const updateSingleSemesterRegistrationIntoDB = async (id:string) => {
-  const result = await SemesterRegistration.findByIdAndUpdate(id);
+const updateSingleSemesterRegistrationIntoDB = async (
+  id: string,
+  payload: Partial<TSemesterRegistration>,
+) => {
+  // check if the requested semester is exists
+
+  const isAcademicSemesterExists = await SemesterRegistration.findById(id);
+
+  if (!isAcademicSemesterExists) {
+    throw new AppError('This semester is not found!', httpStatus.NOT_FOUND);
+  }
+
+  // if the requested semester registration is ended , we will not update anything
+
+  const currentSemesterStatus = isAcademicSemesterExists.status;
+  const requestedStatus = payload?.status;
+
+  if (currentSemesterStatus === RegistrationStatus.ENDED) {
+    throw new AppError(
+      'This semester registration is ended!',
+      httpStatus.NOT_MODIFIED,
+    );
+  }
+
+  // UPCOMING --> ONGOING --> ENDED
+
+  if (currentSemesterStatus === RegistrationStatus.UPCOMING && requestedStatus === RegistrationStatus.ENDED) {
+    throw new AppError(
+      `You can not directly change status from ${currentSemesterStatus} to ${requestedStatus}`,
+      httpStatus.NOT_MODIFIED,
+    );
+  }
+  if (currentSemesterStatus === RegistrationStatus.ONGOING && requestedStatus === RegistrationStatus.UPCOMING) {
+    throw new AppError(
+      `You can not directly change status from ${currentSemesterStatus} to ${requestedStatus}`,
+      httpStatus.NOT_MODIFIED,
+    );
+  }
+  const result = await SemesterRegistration.findByIdAndUpdate(id, payload, {
+    new: true,
+    runValidators: true,
+  });
+
+  return result;
 };
 
 export const SemesterRegistrationService = {
