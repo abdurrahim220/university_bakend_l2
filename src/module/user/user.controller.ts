@@ -5,6 +5,7 @@ import { UserService } from './user.services';
 import sendResponse from '../../utils/sendResponse';
 import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
+import AppError from '../../errors/AppError';
 
 const createStudent = catchAsync(async (req, res, next) => {
   const { password, student: studentData } = req.body;
@@ -47,9 +48,30 @@ const createAdmin = catchAsync(async (req, res, next) => {
   });
 });
 
+const getMe = catchAsync(async (req, res, next) => {
+  
+  const token = req.headers.authorization
+
+  if(!token){
+    throw new AppError('Token not found', httpStatus.BAD_REQUEST);
+  }
+
+
+
+
+  const result = await UserService.getMe(token);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User details',
+    data: result,
+  });
+})
+
 
 export const UserController = {
   createStudent,
   createFaculty,
-  createAdmin
+  createAdmin,
+  getMe
 };

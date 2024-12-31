@@ -1,3 +1,4 @@
+// import { UserService } from './user.services';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose from 'mongoose';
 import config from '../../config';
@@ -19,6 +20,7 @@ import { AcademicDepartment } from '../academicDepartment/academicDepartment.mod
 import { Faculty } from '../Faculty/faculty.model';
 import { TAdmin } from '../Admin/admin.interface';
 import { Admin } from '../Admin/admin.model';
+import { verifyToken } from '../Auth/auth.utils';
 
 const createStudentIntoDB = async (password: string, studentData: TStudent) => {
   //   create a user object
@@ -37,6 +39,10 @@ const createStudentIntoDB = async (password: string, studentData: TStudent) => {
   const admissionSemester = await AcademicSemester.findById(
     studentData.admissionSemester,
   );
+
+  if (!admissionSemester) {
+    throw new AppError('Invalid academic semester', httpStatus.BAD_REQUEST);
+  }
 
   const session = await mongoose.startSession();
 
@@ -148,8 +154,33 @@ const createAdminIntoDB = async (password: string, payload: TAdmin) => {
   }
 };
 
+const getMe = async (token: string) => {
+  const decoded = verifyToken(token, config.jwt_access_secret as string);
+
+  const { userId, role } = decoded;
+
+  // console.log(decoded);
+  let result = null;
+  if (role === 'student') {
+    result = await StudentModel.findOne({ id: userId })
+      .populate('admissionSemester')
+      .populate('academicDepartment');
+  }
+  if (role === 'faculty') {
+    result = await Faculty.findOne({ id: userId }).populate(
+      'academicDepartment',
+    ); // find faculty
+  }
+  if (role === 'admin') {
+    result = await Admin.findOne({ id: userId }); // find admin
+  }
+
+  return result;
+};
+
 export const UserService = {
   createStudentIntoDB,
   createFaculty,
   createAdminIntoDB,
+  getMe,
 };

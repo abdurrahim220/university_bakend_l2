@@ -5,7 +5,7 @@ import config from '../../config';
 import AppError from '../../errors/AppError';
 import { TLoginUser } from './auth.interface';
 import User from '../user/user.model';
-import { createToken } from './auth.utils';
+import { createToken, verifyToken } from './auth.utils';
 import { sendEmail } from '../../utils/sendEmail';
 
 const loginUser = async (payload: TLoginUser) => {
@@ -116,10 +116,7 @@ const changePassword = async (
 
 const refreshToken = async (token: string) => {
   // checking if the given token is valid
-  const decoded = jwt.verify(
-    token,
-    config.jwt_refresh_secret as string,
-  ) as JwtPayload;
+  const decoded = verifyToken(token, config.jwt_refresh_secret as string);
 
   const { userId, iat } = decoded;
 
@@ -225,7 +222,6 @@ const forgotPassword = async (id: string) => {
     throw new AppError('This user is blocked ! !', httpStatus.FORBIDDEN);
   }
 
-
   const jwtPayload = {
     userId: user.id,
     role: user.role,
@@ -234,9 +230,8 @@ const forgotPassword = async (id: string) => {
   const resetToken = createToken(
     jwtPayload,
     config.jwt_access_secret as string,
-    '10m'
+    '10m',
   );
- 
 
   const resetUILink = `${config.reset_password_ui_link}?id=${id}&token=${resetToken}`;
 
@@ -244,9 +239,11 @@ const forgotPassword = async (id: string) => {
   // console.log(user.email, resetUILink);
 };
 
-
-const resetPassword = async (id: string, newPassword: string, token: string | undefined) => {
- 
+const resetPassword = async (
+  id: string,
+  newPassword: string,
+  token: string | undefined,
+) => {
   const user = await User.isUserExistsByCustomId(id);
 
   if (!user) {
@@ -268,7 +265,10 @@ const resetPassword = async (id: string, newPassword: string, token: string | un
 
   // checking if the token is valid
 
-  const decoded = jwt.verify(token as string, config.jwt_access_secret as string) as JwtPayload;
+  const decoded = jwt.verify(
+    token as string,
+    config.jwt_access_secret as string,
+  ) as JwtPayload;
 
   // console.log(decoded)
   if (decoded.userId !== user.id) {
@@ -285,7 +285,6 @@ const resetPassword = async (id: string, newPassword: string, token: string | un
     {
       id: decoded.userId,
       role: decoded.role,
-
     },
     {
       password: newHashedPassword,
@@ -293,11 +292,7 @@ const resetPassword = async (id: string, newPassword: string, token: string | un
       passwordChangedAt: new Date(),
     },
   );
-
-
-  
-}
-
+};
 
 export const AuthServices = {
   loginUser,
@@ -306,4 +301,3 @@ export const AuthServices = {
   forgotPassword,
   resetPassword,
 };
-
