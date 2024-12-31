@@ -53,8 +53,9 @@ const adminSchema = new Schema<TAdmin, AdminModel>(
     dateOfBirth: { type: Date },
     email: {
       type: String,
-      required: [true, 'Email is required'],
+      required: [true, 'Email is not required'],
       unique: true,
+      match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email address'],
     },
     contactNo: { type: String, required: [true, 'Contact number is required'] },
     emergencyContactNo: {
