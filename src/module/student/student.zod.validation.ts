@@ -30,12 +30,12 @@ const localGuardianZodSchema = z.object({
 
 export const createStudentZodValidationSchema = z.object({
   body: z.object({
-    password: z.string().max(20),
+    password: z.string().max(20).optional(),
     student: z.object({
       name: userZodNameSchema,
       gender: z.enum(['male', 'female', 'other']),
       dateOfBirth: z.string().date().optional(),
-      email: z.string().email(),
+      email: z.string().email({ message: 'Invalid email' }),
       contactNo: z.string().min(1),
       emergencyContactNo: z.string().min(1),
       bloogGroup: z.enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']),
@@ -45,7 +45,7 @@ export const createStudentZodValidationSchema = z.object({
       localGuardian: localGuardianZodSchema,
       admissionSemester: z.string(),
       academicDepartment: z.string(),
-      profileImg: z.string().optional(),
+      // profileImg: z.string().optional(),
     }),
   }),
 });

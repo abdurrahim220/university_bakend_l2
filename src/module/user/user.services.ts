@@ -20,11 +20,14 @@ import { AcademicDepartment } from '../academicDepartment/academicDepartment.mod
 import { Faculty } from '../Faculty/faculty.model';
 import { TAdmin } from '../Admin/admin.interface';
 import { Admin } from '../Admin/admin.model';
+import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
 // import { verifyToken } from '../Auth/auth.utils';
 
-const createStudentIntoDB = async (password: string, studentData: TStudent) => {
+const createStudentIntoDB = async (file:any,password: string, studentData: TStudent) => {
   //   create a user object
   // console.log(studentData)
+
+
 
   const userData: Partial<TUser> = {};
 
@@ -50,8 +53,14 @@ const createStudentIntoDB = async (password: string, studentData: TStudent) => {
     session.startTransaction();
     userData.id = await generateStudentId(admissionSemester);
 
-    //   create a user
+const imageName = userData.id + '-' + studentData.name;
+console.log(imageName) 
+    // send image to cloudinary 
 
+   const {secure_url} = await sendImageToCloudinary(imageName,file.path);
+
+
+    //   create a user
     const newUser = await User.create([userData], {
       session,
     });
@@ -64,6 +73,7 @@ const createStudentIntoDB = async (password: string, studentData: TStudent) => {
     // set id , _id as user
     studentData.id = newUser[0].id;
     studentData.user = newUser[0]._id; // reference _id
+    studentData.profileImg=secure_url;
 
     const newStudent = await StudentModel.create([studentData], {
       session,
