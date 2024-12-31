@@ -1,3 +1,4 @@
+import { UserValidation } from './user.validation';
 import express from 'express';
 import { UserController } from './user.controller';
 import { createStudentZodValidationSchema } from '../student/student.zod.validation';
@@ -27,10 +28,13 @@ router.post(
   validateRequest(createAdminValidationSchema),
   UserController.createAdmin,
 );
-router.get(
-  '/me',
-  auth('admin', 'faculty', 'student'),
-  UserController.getMe,
+
+router.patch(
+  '/change-status/:id',
+  auth(USER_ROLE.admin),
+  validateRequest(UserValidation.changeStatusValidationSchema),
+  UserController.changeStatus,
 );
+router.get('/me', auth('admin', 'faculty', 'student'), UserController.getMe);
 
 export const userRouter = router;

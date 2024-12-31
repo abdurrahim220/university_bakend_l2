@@ -6,12 +6,12 @@ import { updateCreateFacultyValidationSchema } from './faculty.validation';
 const router = express.Router();
 
 router.get('/all', facultyController.getAllFaculty);
-router.get('/single/:id', facultyController.getSingleFaculty);
+router.get('/:id', facultyController.getSingleFaculty);
 router.patch(
-  '/update/:id',
+  '/:id',
   validateRequest(updateCreateFacultyValidationSchema),
   facultyController.updateFaculty,
 );
-router.delete('/delete/:id', facultyController.deleteFacultyFromDB);
+router.delete('/:id', facultyController.deleteFacultyFromDB);
 
 export const FacultyRouter = router;

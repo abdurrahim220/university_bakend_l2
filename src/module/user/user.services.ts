@@ -20,7 +20,7 @@ import { AcademicDepartment } from '../academicDepartment/academicDepartment.mod
 import { Faculty } from '../Faculty/faculty.model';
 import { TAdmin } from '../Admin/admin.interface';
 import { Admin } from '../Admin/admin.model';
-import { verifyToken } from '../Auth/auth.utils';
+// import { verifyToken } from '../Auth/auth.utils';
 
 const createStudentIntoDB = async (password: string, studentData: TStudent) => {
   //   create a user object
@@ -154,27 +154,33 @@ const createAdminIntoDB = async (password: string, payload: TAdmin) => {
   }
 };
 
-const getMe = async (token: string) => {
-  const decoded = verifyToken(token, config.jwt_access_secret as string);
+const getMe = async (userId: string, role: string) => {
+  // const decoded = verifyToken(token, config.jwt_access_secret as string);
 
-  const { userId, role } = decoded;
+  // const { userId, role } = decoded;
 
   // console.log(decoded);
   let result = null;
   if (role === 'student') {
     result = await StudentModel.findOne({ id: userId })
       .populate('admissionSemester')
-      .populate('academicDepartment');
+      .populate('academicDepartment')
+      .populate('user');
   }
   if (role === 'faculty') {
-    result = await Faculty.findOne({ id: userId }).populate(
-      'academicDepartment',
-    ); // find faculty
+    result = await Faculty.findOne({ id: userId })
+      .populate('academicDepartment')
+      .populate('user'); // find faculty
   }
   if (role === 'admin') {
-    result = await Admin.findOne({ id: userId }); // find admin
+    result = await Admin.findOne({ id: userId }).populate('user'); // find admin
   }
 
+  return result;
+};
+
+const changeStatus = async (id: string, status: string) => {
+  const result = await User.findByIdAndUpdate(id, { status }, { new: true });
   return result;
 };
 
@@ -183,4 +189,5 @@ export const UserService = {
   createFaculty,
   createAdminIntoDB,
   getMe,
+  changeStatus,
 };
