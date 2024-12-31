@@ -8,7 +8,7 @@ import catchAsync from '../../utils/catchAsync';
 import AppError from '../../errors/AppError';
 
 const createStudent = catchAsync(async (req, res, next) => {
-  console.log(req.file);
+  // console.log(req.file);
   // console.log(req.body);
   const { password, student: studentData } = req.body;
 
@@ -27,7 +27,7 @@ const createFaculty = catchAsync(async (req, res, next) => {
   const { password, faculty: facultyData } = req.body;
   // console.log(facultyData)
 
-  const result = await UserService.createFaculty(password, facultyData);
+  const result = await UserService.createFaculty(req.file,password, facultyData);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

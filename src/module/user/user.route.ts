@@ -15,9 +15,9 @@ router.post(
   '/create-student',
   auth(USER_ROLE.admin),
   upload.single('file'),
-  (req:Request,res:Response,next:NextFunction)=>{
-    req.body = JSON.parse(req.body.data)
-    next()
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data);
+    next();
   },
   validateRequest(createStudentZodValidationSchema),
   UserController.createStudent,
@@ -25,12 +25,22 @@ router.post(
 router.post(
   '/create-faculty',
   auth(USER_ROLE.admin),
+  upload.single('file'),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data);
+    next();
+  },
   validateRequest(createFacultyValidationSchema),
   UserController.createFaculty,
 );
 router.post(
   '/create-admin',
   // auth(USER_ROLE.admin),
+  upload.single('file'),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data);
+    next();
+  },
   validateRequest(createAdminValidationSchema),
   UserController.createAdmin,
 );

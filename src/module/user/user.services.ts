@@ -54,7 +54,7 @@ const createStudentIntoDB = async (file:any,password: string, studentData: TStud
     userData.id = await generateStudentId(admissionSemester);
 
 const imageName = userData.id + '-' + studentData.name;
-console.log(imageName) 
+// console.log(imageName) 
     // send image to cloudinary 
 
    const {secure_url} = await sendImageToCloudinary(imageName,file.path);
@@ -92,7 +92,7 @@ console.log(imageName)
   }
 };
 
-const createFaculty = async (password: string, payload: TFaculty) => {
+const createFaculty = async (file:any,password: string, payload: TFaculty) => {
   const userData: Partial<TUser> = {};
   // console.log(payload);
 
@@ -112,12 +112,20 @@ const createFaculty = async (password: string, payload: TFaculty) => {
   try {
     session.startTransaction();
     userData.id = await generateFacultyId();
+
+    const imageName = userData.id + '-' + payload.name;
+    // console.log(imageName) 
+        // send image to cloudinary 
+       const {secure_url} = await sendImageToCloudinary(imageName,file.path);
+
+
     const newUser = await User.create([userData], { session });
     if (!newUser.length) {
       throw new AppError('Failed to create user', httpStatus.BAD_REQUEST);
     }
     payload.id = newUser[0].id;
     payload.user = newUser[0]._id;
+    payload.profileImg=secure_url;
 
     const newFaculty = await Faculty.create([payload], { session });
 
