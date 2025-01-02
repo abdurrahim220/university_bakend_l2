@@ -7,6 +7,7 @@ export type TOfferedCourse = {
   academicSemester?: Types.ObjectId;
   academicFaculty: Types.ObjectId;
   academicDepartment: Types.ObjectId;
+  // offeredCourse: Types.ObjectId;
   course: Types.ObjectId;
   faculty: Types.ObjectId;
   maxCapacity: number;

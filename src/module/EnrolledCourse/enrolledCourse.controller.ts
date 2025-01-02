@@ -4,8 +4,8 @@ import sendResponse from '../../utils/sendResponse';
 import { EnrolledCourseService } from './enrolledCourse.services';
 
 const createEnrolledCourse = catchAsync(async (req, res) => {
-  const result = await EnrolledCourseService.createEnrolledCourseIntoDB();
-
+  const userId = req.user.userId;
+  const result = await EnrolledCourseService.createEnrolledCourseIntoDB(userId, req.body);
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
     success: true,

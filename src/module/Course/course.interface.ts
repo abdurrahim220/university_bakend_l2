@@ -1,4 +1,4 @@
-import { Schema } from 'mongoose';
+import { Schema, Types } from 'mongoose';
 
 export type TPreRequisiteCourses = {
   course: Schema.Types.ObjectId;
