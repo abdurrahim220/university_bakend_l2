@@ -8,6 +8,7 @@ import { StudentModel } from '../student/student.model';
 import mongoose from 'mongoose';
 import { SemesterRegistration } from '../semesterRegistration/semesterRegistration.model';
 import { Course } from '../Course/course.model';
+import { Faculty } from '../Faculty/faculty.model';
 
 const createEnrolledCourseIntoDB = async (
   userId: string,
@@ -53,6 +54,8 @@ const createEnrolledCourseIntoDB = async (
     isOfferedCourseExit.semesterRegistration,
   ).select('maxCredit');
 
+  const maxCredit = semesterRegistration?.maxCredit;
+
   // total enrolled credit + new enrolled course credit should be less than max credit
   const totalEnrolledCoures = await EnrolledCourseModel.aggregate([
     {
@@ -91,11 +94,7 @@ const createEnrolledCourseIntoDB = async (
       ? totalEnrolledCoures[0].totalEnrolledCredit
       : 0;
 
-  if (
-    totalCredits &&
-    semesterRegistration?.maxCredit &&
-    totalCredits + course?.credits > semesterRegistration?.maxCredit
-  ) {
+  if (totalCredits && maxCredit && totalCredits + course?.credits > maxCredit) {
     throw new AppError('Max credit limit reached', httpStatus.BAD_REQUEST);
   }
   // console.log(totalCredits);
@@ -142,6 +141,47 @@ const createEnrolledCourseIntoDB = async (
   }
 };
 
+const updateEnrolledCourseMarksIntoDB = async (
+  facultyId: string,
+  payload: Partial<TEnrolledCourse>,
+) => {
+  const { semesterRegistration, offeredCourse, student, courseMarks } = payload;
+
+  const faculty = await Faculty.findOne({ id: facultyId }, { _id: 1 });
+
+  if (!faculty) {
+    throw new AppError('Faculty not found', httpStatus.NOT_FOUND);
+  }
+
+  // console.log(faculty)
+
+  const enrolledCourse = await EnrolledCourseModel.findOne({
+    semesterRegistration,
+    offeredCourse,
+    student,
+    faculty: faculty._id,
+  });
+
+  if (!enrolledCourse) {
+    throw new AppError('Enrolled course not found', httpStatus.NOT_FOUND);
+  }
+
+  
+
+  if (enrolledCourse.faculty.toString() !== faculty._id.toString()) {
+    throw new AppError('You are not allowed to update this course', httpStatus.FORBIDDEN);
+  }
+
+  const totalMarks = Object.values(courseMarks).reduce(
+    (acc, curr) => acc + curr,
+    0,
+  );
+  
+
+  return result;
+};
+
 export const EnrolledCourseService = {
   createEnrolledCourseIntoDB,
+  updateEnrolledCourseMarksIntoDB,
 };
