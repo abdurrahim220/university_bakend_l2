@@ -122,3 +122,70 @@ src/
 tsconfig.json
 uploads/
     └── text.txt
+```
+
+## Routes
+
+### Academic Department
+- **Route**: `/api/academic-department`
+- **Methods**: `GET`, `POST`, `PUT`, `DELETE`
+- **File**: [`academicDepartment.route.ts`](src/module/academicDepartment/academicDepartment.route.ts)
+
+### Academic Faculty
+- **Route**: `/api/academic-faculty`
+- **Methods**: `GET`, `POST`, `PUT`, `DELETE`
+- **File**: [`academicFaculty.route.ts`](src/module/academicFaculty/academicFaculty.route.ts)
+
+### Academic Semester
+- **Route**: `/api/academic-semester`
+- **Methods**: `GET`, `POST`, `PUT`, `DELETE`
+- **File**: [`academicSemester.route.ts`](src/module/academicSemester/academicSemester.route.ts)
+
+### Admin
+- **Route**: `/api/admin`
+- **Methods**: `GET`, `POST`, `PUT`, `DELETE`
+- **File**: [`admin.route.ts`](src/module/admin/admin.route.ts)
+
+### Auth
+- **Route**: `/api/auth`
+- **Methods**: `POST`
+- **File**: [`auth.route.ts`](src/module/auth/auth.route.ts)
+
+### Course
+- **Route**: `/api/course`
+- **Methods**: `GET`, `POST`, `PUT`, `DELETE`
+- **File**: [`course.route.ts`](src/module/course/course.route.ts)
+
+### Department
+- **Route**: `/api/department`
+- **Methods**: `GET`, `POST`, `PUT`, `DELETE`
+- **File**: [`department.route.ts`](src/module/department/department.route.ts)
+
+### Enrolled Course
+- **Route**: `/api/enrolled-course`
+- **Methods**: `GET`, `POST`, `PUT`, `DELETE`
+- **File**: [`enrolledCourse.route.ts`](src/module/enrolledCourse/enrolledCourse.route.ts)
+
+### Faculty
+- **Route**: `/api/faculty`
+- **Methods**: `GET`, `POST`, `PUT`, `DELETE`
+- **File**: [`faculty.route.ts`](src/module/faculty/faculty.route.ts)
+
+### Management Department
+- **Route**: `/api/management-department`
+- **Methods**: `GET`, `POST`, `PUT`, `DELETE`
+- **File**: [`managementDepartment.route.ts`](src/module/managementDepartment/managementDepartment.route.ts)
+
+### Student
+- **Route**: `/api/student`
+- **Methods**: `GET`, `POST`, `PUT`, `DELETE`
+- **File**: [`student.route.ts`](src/module/student/student.route.ts)
+
+### User
+- **Route**: `/api/user`
+- **Methods**: `GET`, `POST`, `PUT`, `DELETE`
+- **File**: [`user.route.ts`](src/module/user/user.route.ts)
+
+### Router Index
+- **File**: [`index.ts`](src/router/index.ts)
+- **Description**: Main router file that combines all module routes.
