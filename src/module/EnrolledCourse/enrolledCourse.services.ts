@@ -10,6 +10,8 @@ import { SemesterRegistration } from '../semesterRegistration/semesterRegistrati
 import { Course } from '../Course/course.model';
 import { Faculty } from '../Faculty/faculty.model';
 
+import { calculateGradeAndPoints } from './enrolledCourse.utils';
+
 const createEnrolledCourseIntoDB = async (
   userId: string,
   payload: TEnrolledCourse,
@@ -166,19 +168,48 @@ const updateEnrolledCourseMarksIntoDB = async (
     throw new AppError('Enrolled course not found', httpStatus.NOT_FOUND);
   }
 
-  
-
   if (enrolledCourse.faculty.toString() !== faculty._id.toString()) {
-    throw new AppError('You are not allowed to update this course', httpStatus.FORBIDDEN);
+    throw new AppError(
+      'You are not allowed to update this course',
+      httpStatus.FORBIDDEN,
+    );
   }
 
-  const totalMarks = Object.values(courseMarks).reduce(
-    (acc, curr) => acc + curr,
-    0,
+  const modifiedData: Record<string, unknown> = {
+    ...courseMarks,
+  };
+
+  if (courseMarks?.finalTerm) {
+    const { classTest1, classTest2, midTerm, finalTerm } =
+      enrolledCourse.courseMarks;
+    // console.log(classTest1, classTest2, midTerm, finalTerm);
+    const totalMarks = classTest1 + classTest2 + midTerm + finalTerm;
+
+    // console.log(totalMarks);
+    const result = calculateGradeAndPoints(totalMarks);
+
+    // modifiedData['totalMarks'] = totalMarks;
+    modifiedData.grade = result.grade;
+    modifiedData.gradePoint = result.gradePoints;
+    modifiedData.isCompleted = true;
+  }
+
+  if (courseMarks && Object.keys(courseMarks).length) {
+    for (const [key, value] of Object.entries(courseMarks)) {
+      modifiedData[`courseMarks.${key}`] = value;
+    }
+  }
+
+  const result = await EnrolledCourseModel.findByIdAndUpdate(
+    enrolledCourse._id,
+    modifiedData,
+    {
+      new: true,
+    },
   );
-  
 
   return result;
+  // console.log(result);
 };
 
 export const EnrolledCourseService = {
